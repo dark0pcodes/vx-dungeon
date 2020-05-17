@@ -1,0 +1,7 @@
+MONGO:
+  DATABASE: vx-dungeon
+  USERNAME: vx-dungeon
+  PASSWORD: mWfFnAs3C=EZ
+  HOST: vx-dungeon-mongo
+  # HOST: localhost
+  PORT: 27017

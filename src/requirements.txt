@@ -1,4 +1,6 @@
 pyyaml
+ssdeep
+pyimpfuzzy
 celery
 pymongo
 flask
