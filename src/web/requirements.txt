@@ -1,0 +1,6 @@
+pyyaml
+celery
+pymongo
+flask
+flask-classy
+waitress

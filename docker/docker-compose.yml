@@ -1,6 +1,6 @@
 version: '3.1'
 services:
-  mongo:
+  vx-dungeon-mongo:
     image: mongo:4.2.6-bionic
     container_name: vx-dungeon-mongo
     environment:
@@ -17,4 +17,16 @@ services:
     build:
       context: ..
       dockerfile: docker/app/Dockerfile
+    depends_on:
+      - vx-dungeon-mongo
     container_name: vx-dungeon-app
+
+  vx-dungeon-web:
+    build:
+      context: ..
+      dockerfile: docker/web/Dockerfile
+    depends_on:
+      - vx-dungeon-mongo
+    ports:
+      - 8080:8080
+    container_name: vx-dungeon-web
