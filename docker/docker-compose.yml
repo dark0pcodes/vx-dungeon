@@ -28,5 +28,15 @@ services:
     depends_on:
       - vx-dungeon-mongo
     ports:
-      - 8080:8080
+      - 8080
     container_name: vx-dungeon-web
+
+  vx-dungeon-nginx:
+    image: nginx:1.13.7
+    container_name: vx-dungeon-nginx
+    depends_on:
+      - vx-dungeon-web
+    volumes:
+      - ../config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 8080:8080
