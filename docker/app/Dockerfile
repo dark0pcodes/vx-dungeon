@@ -3,7 +3,7 @@ FROM python:3.6-buster
 ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get -y upgrade
-RUN apt-get -y install apt-utils libfuzzy-dev
+RUN apt-get -y install libfuzzy-dev
 
 WORKDIR /opt/vx-dungeon
 RUN mkdir src
