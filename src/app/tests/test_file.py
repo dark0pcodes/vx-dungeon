@@ -29,7 +29,7 @@ class TestFile(unittest.TestCase):
 
     def test_analyzers(self):
         for key, value in self.results.items():
-            result = getattr(self.obj, f'_{key}')()
+            result = getattr(self.obj, f'_{key}_analyzer')()
             if key == 'strings':
                 result = len(result)
 

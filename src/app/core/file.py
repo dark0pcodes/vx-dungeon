@@ -12,56 +12,56 @@ class File:
         self.pe = pyimpfuzzy.pefileEx(data=self.file_buffer)
         self.file_path = file_path
 
-    def _md5(self):
+    def _analyzer_md5(self):
         """
         Compute MD5
         :return:
         """
         return hashlib.md5(self.file_buffer).hexdigest()
 
-    def _sha1(self):
+    def _analyzer_sha1(self):
         """
         Compute SHA1
         :return:
         """
         return hashlib.sha1(self.file_buffer).hexdigest()
 
-    def _sha256(self):
+    def _analyzer_sha256(self):
         """
         Compute SHA256
         :return:
         """
         return hashlib.sha256(self.file_buffer).hexdigest()
 
-    def _ssdeep(self):
+    def _analyzer_ssdeep(self):
         """
         Compute SSDEEP
         :return:
         """
         return ssdeep.hash(self.file_buffer)
 
-    def _imp_hash(self):
+    def _analyzer_imp_hash(self):
         """
         Compute ImpHash
         :return:
         """
         return self.pe.get_imphash()
 
-    def _imp_fuzzy(self):
+    def _analyzer_imp_fuzzy(self):
         """
         Compute ImpFuzzyHash
         :return:
         """
         return pyimpfuzzy.get_impfuzzy_data(self.file_buffer)
 
-    def _pe_sections(self):
+    def _analyzer_pe_sections(self):
         """
         Compute PE sections MD5
         :return:
         """
         return [section.get_hash_md5() for section in self.pe.sections]
 
-    def _strings(self):
+    def _analyzer_strings(self):
         """
         Extract ASCII and Unicode Strings
         :return:
@@ -72,11 +72,12 @@ class File:
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
             stdout, stderr = p.communicate()
             [strings.append(item) for item in stdout.decode().split('\n') if item]
+
         return strings
 
     def analyze(self):
         results = {}
-        for analyzer in ['md5', 'sha1', 'sha256', 'ssdeep', 'imp_hash', 'imp_fuzzy', 'pe_sections', 'strings']:
-            results[analyzer] = getattr(self, f'_{analyzer}')()
+        for analyzer in [item for item in dir(self) if '_analyzer_' in item]:
+            results[analyzer[10:]] = getattr(self, analyzer)()
 
         return results
