@@ -5,9 +5,9 @@ name: vx-dungeon-app-dev
 
 on:
   push:
-    branches: [ VX-1 ]
+    branches: [ dev ]
   pull_request:
-    branches: [ VX-1 ]
+    branches: [ dev ]
 
 jobs:
   build:
