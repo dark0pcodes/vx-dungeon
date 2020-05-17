@@ -1,3 +1,5 @@
+pyyaml
 ssdeep
-pefile
 pyimpfuzzy
+celery
+pymongo

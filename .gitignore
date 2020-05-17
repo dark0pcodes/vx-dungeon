@@ -140,3 +140,5 @@ app.db
 app.db-journal
 .idea
 storage/
+
+init-mongo.js

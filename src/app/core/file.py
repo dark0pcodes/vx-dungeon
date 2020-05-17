@@ -75,7 +75,11 @@ class File:
 
         return strings
 
-    def analyze(self):
+    def analysis(self):
+        """
+        Run all analyzers in the class
+        :return:
+        """
         results = {}
         for analyzer in [item for item in dir(self) if '_analyzer_' in item]:
             results[analyzer[10:]] = getattr(self, analyzer)()
