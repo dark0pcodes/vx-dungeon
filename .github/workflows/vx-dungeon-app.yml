@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: vx-dungeon-app
+name: vx-dungeon-app-dev
 
 on:
   push:
@@ -26,6 +26,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8
         pip install -r src/app/requirements.txt
+        cd src
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -34,5 +35,4 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with unittest
       run: |
-        cd src
         python -m unittest discover -s app/tests
