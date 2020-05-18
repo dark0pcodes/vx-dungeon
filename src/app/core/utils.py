@@ -3,16 +3,13 @@ import re
 
 import yaml
 
-from app.common.paths import CONFIG_PATH
+from app.common.paths import CONFIG_PATH, STORAGE_PATH
 
 
-def load_config(config_name, tag='!ENV'):
+def load_config(tag: str = '!ENV'):
     """
     Load config.yaml in memory
-
-    :param config_name: base, collectors or enhancers
     :param tag: the tag to look for
-
     :return:
     """
     # pattern for global vars: look for ${word}
@@ -47,3 +44,12 @@ def load_config(config_name, tag='!ENV'):
     with open(os.path.join(CONFIG_PATH, 'app.yml'), 'r') as f:
         config = yaml.load(f, Loader=loader)
     return config
+
+
+def create_storage():
+    """
+    Create storage folder
+    Returns:
+    """
+    if not os.path.exists(STORAGE_PATH):
+        os.mkdir(STORAGE_PATH)

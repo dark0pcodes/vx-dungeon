@@ -17,4 +17,4 @@ RUN pip install -r requirements.txt
 
 RUN python -m unittest discover -s tests
 
-ENTRYPOINT ["python", "wsgi.py"]
+ENTRYPOINT ["python", "run.py"]

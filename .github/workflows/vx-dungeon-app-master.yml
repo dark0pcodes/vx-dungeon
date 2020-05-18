@@ -2,9 +2,9 @@ name: vx-dungeon-app-dev
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ master ]
   pull_request:
-    branches: [ dev ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -33,3 +33,6 @@ jobs:
       run: |
         cd src
         python -m unittest discover -s tests
+    - name: Build the Docker image
+      # TODO: Complete image registry push
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
