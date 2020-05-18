@@ -2,9 +2,9 @@ name: vx-dungeon-app-dev
 
 on:
   push:
-    branches: [ master ]
+    branches: [ VX-1 ]
   pull_request:
-    branches: [ master ]
+    branches: [ VX-1 ]
 
 jobs:
   build:
@@ -33,6 +33,22 @@ jobs:
       run: |
         cd src
         python -m unittest discover -s tests
+    - name: Login to DockerHub Registry
+      run: |
+        echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+    - name: Get the version
+      id: vars
+      run: |
+        echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
     - name: Build the Docker image
-      # TODO: Complete image registry push
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: |
+        docker build . --file Dockerfile --tag 0bscurec0de/vx-dungeon:${{steps.vars.outputs.tag}}
+    - name: Push the tagged Docker image
+      run: |
+        docker push 0bscurec0de/vx-dungeon:${{steps.vars.outputs.tag}}
+    - name: Build the latest Docker image
+      run: |
+        docker build . --file Dockerfile --tag 0bscurec0de/vx-dungeon:latest
+    - name: Push the latest Docker image
+      run: |
+        docker push 0bscurec0de/vx-dungeon:latest

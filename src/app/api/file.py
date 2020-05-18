@@ -11,6 +11,7 @@ class FileView(FlaskView):
         Store sample in Repo
         :return:
         """
+        # TODO: Create function to return json api responses
         if 'file' not in request.files:
             return jsonify({'status': 'error', 'message': 'No file was submitted'})
         file_content = request.files['file']
