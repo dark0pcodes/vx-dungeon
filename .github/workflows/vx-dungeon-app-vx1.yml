@@ -45,10 +45,10 @@ jobs:
         docker build . --file docker/Dockerfile --tag 0bscurec0de/vx-dungeon:${{steps.vars.outputs.tag}}
     - name: Push the tagged Docker image
       run: |
-        docker push 0bscurec0de/vx-dungeon:${{steps.vars.outputs.tag}}
+        docker push efelipeduartep/vx-dungeon:${{steps.vars.outputs.tag}}
     - name: Build the latest Docker image
       run: |
         docker build . --file docker/Dockerfile --tag 0bscurec0de/vx-dungeon:latest
     - name: Push the latest Docker image
       run: |
-        docker push 0bscurec0de/vx-dungeon:latest
+        docker push efelipeduartep/vx-dungeon:latest
