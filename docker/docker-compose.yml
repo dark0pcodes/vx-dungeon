@@ -1,0 +1,41 @@
+version: '3.1'
+services:
+  vx-dungeon-mongo:
+    image: mongo:4.2.6-bionic
+    container_name: vx-dungeon-mongo
+    env_file:
+      - ../.env
+    environment:
+      MONGO_INITDB_DATABASE: vx-dungeon
+    ports:
+      - 27017:27017
+    volumes:
+      - ../config/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ../data/db:/data/db
+
+  vx-dungeon-memcached:
+    container_name: vx-dungeon-memcached
+    image: memcached:latest
+    ports:
+      - "11211:11211"
+
+  vx-dungeon-app:
+    image: 0bscurec0de/vx-dungeon:latest
+    depends_on:
+      - vx-dungeon-mongo
+      - vx-dungeon-memcached
+    ports:
+      - 8080
+    container_name: vx-dungeon-app
+    env_file:
+      - ../.env
+
+  vx-dungeon-nginx:
+    image: nginx:1.13.7
+    container_name: vx-dungeon-nginx
+    depends_on:
+      - vx-dungeon-app
+    volumes:
+      - ../config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 8080:8080

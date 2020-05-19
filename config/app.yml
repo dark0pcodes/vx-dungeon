@@ -1,0 +1,10 @@
+MONGO:
+  DATABASE: vx-dungeon
+  USERNAME: !ENV ${MONGO_USERNAME}
+  PASSWORD: !ENV ${MONGO_PASSWORD}
+  HOST: vx-dungeon-mongo
+  PORT: 27017
+
+MEMCACHED:
+  HOST: vx-dungeon-memcached
+  PORT: 11211

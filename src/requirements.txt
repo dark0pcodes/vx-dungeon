@@ -1,0 +1,9 @@
+pyyaml
+ssdeep
+pyimpfuzzy
+celery
+pymongo
+flask
+flask-classy
+waitress
+pymemcache
