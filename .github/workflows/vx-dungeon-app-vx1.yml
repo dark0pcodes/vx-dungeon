@@ -39,7 +39,7 @@ jobs:
     - name: Get the version
       id: vars
       run: |
-        echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+        echo ::set-output name=tag::$(echo ${GITHUB_REF:11})
     - name: Build the Docker image
       run: |
         docker build . --file Dockerfile --tag 0bscurec0de/vx-dungeon:${{steps.vars.outputs.tag}}
