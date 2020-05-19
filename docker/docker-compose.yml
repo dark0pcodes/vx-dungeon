@@ -20,9 +20,7 @@ services:
       - "11211:11211"
 
   vx-dungeon-app:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
+    image: 0bscurec0de/vx-dungeon:latest
     depends_on:
       - vx-dungeon-mongo
       - vx-dungeon-memcached

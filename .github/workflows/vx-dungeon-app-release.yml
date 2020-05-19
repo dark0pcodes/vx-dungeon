@@ -1,10 +1,8 @@
-name: vx-dungeon-app-vx1
+name: vx-dungeon-app-release
 
 on:
-  push:
-    branches: [ VX-1 ]
-  pull_request:
-    branches: [ VX-1 ]
+  release:
+    types: [ published ]
 
 jobs:
   build:
