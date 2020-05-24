@@ -7,7 +7,9 @@ from app.core.file import File
 
 class TestFile(unittest.TestCase):
     def setUp(self):
-        self.obj = File(os.path.join(TESTS_PATH, 'data', 'pe'))
+        self.obj = File(os.path.join(
+            TESTS_PATH, 'data', '736330aaa3a4683d3cc866153510763351a60062a236d22b12f4fe0f10853582')
+        )
         self.results = {
             'md5': '9052d06c6ac53471f8496263f8fef2eb',
             'sha1': '73016558c8353509b15cd757063816369e9abfa7',
