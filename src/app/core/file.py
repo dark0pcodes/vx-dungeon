@@ -1,8 +1,10 @@
 import hashlib
+import json
 import os
 import re
 import subprocess
 import uuid
+from time import sleep
 
 import pyimpfuzzy
 import ssdeep
@@ -13,6 +15,7 @@ from app.common.paths import STORAGE_PATH
 from app.core.storage import Storage
 
 
+# TODO: Implement MIN_HASHES
 class File:
     storage = Storage('files')
 
@@ -98,6 +101,46 @@ class File:
 
         return results
 
+    @staticmethod
+    def jaccard_index(list_a: list, list_b: list):
+        """
+        Compute the Jaccard index over two lists
+        Args:
+            list_a:
+            list_b:
+
+        Returns:
+        """
+        a, b = set(list_a), set(list_b)
+        return len(a.intersection(b)) / len(a.union(b))
+
+    @classmethod
+    def check_hash(cls, file_hash: str):
+        """
+        Check if a file hash is valid
+        Args:
+            file_hash:
+
+        Returns:
+        """
+        for key, value in REGEX_HASH.items():
+            if re.match(value, file_hash):
+                return key
+
+    @classmethod
+    def query_one(cls, query: dict = None, file_content: bytes = None):
+        """
+
+        Args:
+            query:
+            file_content:
+
+        Returns:
+        """
+        if file_content:
+            return cls.storage.query_one({'sha256': hashlib.sha256(file_content).hexdigest()})
+        return cls.storage.query_one(query)
+
     @classmethod
     def register_file(cls, file_content: bytes):
         """
@@ -108,64 +151,45 @@ class File:
         Returns:
 
         """
-        if not cls.storage.query_one({'sha256': hashlib.sha256(file_content).hexdigest()}):
-            file_path = os.path.join(STORAGE_PATH, str(uuid.uuid4()))
+        file_path = os.path.join(STORAGE_PATH, str(uuid.uuid4()))
 
-            with open(file_path, 'wb') as f:
-                f.write(file_content)
+        with open(file_path, 'wb') as f:
+            f.write(file_content)
 
-            file_obj = cls(file_path)
-            cls.storage.save_one(file_obj.analysis())
-            return {'status': 'success', 'message': 'File was successfully stored'}
-        return {'status': 'error', 'message': 'File already exists in repository'}
+        file_obj = cls(file_path)
+        return cls.storage.query_one({'_id': cls.storage.save_one(file_obj.analysis()).inserted_id})
 
     @classmethod
-    def get_file_details(cls, file_hash: str):
+    def get_related_imp_hash(cls, file_data):
         """
-        Given a valid hash returns the corresponding bytes
+        Return all files matching the imp_hash
         Args:
-            file_hash:
+            file_data:
 
         Returns:
         """
-        for key, value in REGEX_HASH.items():
-            if re.match(value, file_hash):
-                try:
-                    data = cls.storage.query_one({key: file_hash})
-                    data.pop('_id')
-                    return data
-                except AttributeError:
-                    return {'status': 'error', 'message': 'File does not exist in repository'}
-        return {'status': 'error', 'message': 'Not valid MD5/SHA1/SHA256 was submitted'}
+        return list(cls.storage.query({'imp_hash': file_data['imp_hash'], '_id': {'$ne': file_data['_id']}}))
 
     @classmethod
-    def get_file_path(cls, file_hash: str):
+    def get_related(cls, file_id, module, threshold):
         """
-        Given a file hash returns the file path in disk
-        Args:
-            file_hash:
-
-        Returns:
-
-        """
-        data = cls.get_file_details(file_hash)
-        if 'status' not in data:
-            return os.path.join(STORAGE_PATH, data['file_name'])
-        return data
-
-    @classmethod
-    def advanced_search(cls, file_hash, **kwargs):
-        """
-        Given a file_hash returns a list of similar samples in the repo
+        Given a file_id returns a list of similar samples in the repo
         Returns:
         """
         task_uuid = str(uuid.uuid4())
-        # TODO: Verify threshold and module in kwargs
 
         # Set cache and trigger async task
-        cache.set(task_uuid, '{},{module},{threshold}'.format(file_hash, **kwargs), 3600)
+        cache.set(task_uuid, f'{file_id},{module},{threshold}', 3600)
 
-        from app.core.tasks import advanced_search
+        from app.core.tasks import get_related
 
-        advanced_search.delay(task_uuid)
+        # Launch Async task
+        get_related.delay(task_uuid)
+
+        for i in range(0, 10):
+            cached_data = cache.get(task_uuid).decode()
+            try:
+                return json.loads(cached_data)
+            except ValueError:
+                sleep(0.1)
         return {'task_id': task_uuid}

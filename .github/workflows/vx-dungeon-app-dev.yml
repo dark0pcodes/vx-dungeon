@@ -33,3 +33,6 @@ jobs:
       run: |
         cd src
         python -m unittest discover -s tests
+    - name: Build the Docker image
+      run: |
+        docker build . --file docker/Dockerfile
